@@ -1,43 +1,41 @@
-# Hermes agent configuration — Super Productivity integration
 tools:
   - name: sp_list_tasks
     description: >
       List tasks from Super Productivity.
-      Optional: project_id (string), include_done (bool, default false).
-      Returns list of tasks with id, title, isDone, projectId, notes, plannedAt.
+      Optional arguments: project_id, include_done.
+      Returns task dictionaries with id, title, completion state, projectId, notes, plannedAt and tagIds.
     module: sp_webdav_tool.hermes_adapter
     function: sp_list_tasks
 
   - name: sp_add_task
     description: >
-      Add a new task to Super Productivity.
-      Required: title (string).
-      Optional: project_id (default INBOX), notes (string), planned_at (unix ms).
-      Returns created task dict with id.
+      Add a task to Super Productivity.
+      Required argument: title.
+      Optional arguments: project_id, notes, planned_at.
     module: sp_webdav_tool.hermes_adapter
     function: sp_add_task
 
   - name: sp_complete_task
     description: >
-      Mark a task as done. Required: task_id (full UUID string).
+      Mark a task as completed by its full task id.
     module: sp_webdav_tool.hermes_adapter
     function: sp_complete_task
 
   - name: sp_update_task
     description: >
-      Update task fields. Required: task_id.
-      Optional: title, notes, planned_at (unix ms).
+      Update a task by id.
+      Optional fields: title, notes, planned_at.
     module: sp_webdav_tool.hermes_adapter
     function: sp_update_task
 
   - name: sp_list_projects
     description: >
-      List all projects. Returns list with id and title.
+      List all projects from Super Productivity.
     module: sp_webdav_tool.hermes_adapter
     function: sp_list_projects
 
   - name: sp_list_tags
     description: >
-      List all tags. Returns list with id and title.
+      List all tags from Super Productivity.
     module: sp_webdav_tool.hermes_adapter
     function: sp_list_tags

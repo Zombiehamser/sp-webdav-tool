@@ -1,0 +1,47 @@
+{
+  "task": {
+    "ids": ["task-001", "task-002"],
+    "entities": {
+      "task-001": {
+        "id": "task-001",
+        "title": "First task",
+        "isDone": false,
+        "projectId": "proj-001",
+        "tagIds": [],
+        "subTaskIds": [],
+        "notes": "",
+        "timeEstimate": 0,
+        "timeSpent": 0,
+        "created": 1718440000000,
+        "plannedAt": null
+      },
+      "task-002": {
+        "id": "task-002",
+        "title": "Done task",
+        "isDone": true,
+        "projectId": "INBOX",
+        "tagIds": [],
+        "subTaskIds": [],
+        "notes": "some notes",
+        "timeEstimate": 0,
+        "timeSpent": 3600000,
+        "created": 1718440000000,
+        "plannedAt": null
+      }
+    }
+  },
+  "project": {
+    "ids": ["proj-001"],
+    "entities": {
+      "proj-001": {
+        "id": "proj-001",
+        "title": "My Project",
+        "isArchived": false
+      }
+    }
+  },
+  "tag": {
+    "ids": [],
+    "entities": {}
+  }
+}   

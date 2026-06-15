@@ -1,20 +1,26 @@
 from sp_webdav_tool import SpOperations
 
-with SpOperations() as ops:
-    projects = ops.list_projects()
-    for p in projects:
-        print(p.id[:8], p.title)
 
-    tasks = ops.list_tasks()
-    for t in tasks:
-        print(t.id[:8], t.title)
+def main() -> None:
+    with SpOperations() as ops:
+        projects = ops.list_projects()
+        for project in projects:
+            print(project.id[:8], project.title)
 
-    new_task = ops.add_task(
-        title="Review deployment",
-        project_id=projects[0].id if projects else "INBOX",
-        notes="Check docker logs after release",
-    )
-    print("Created:", new_task.id)
+        tasks = ops.list_tasks()
+        for task in tasks:
+            print(task.id[:8], task.title)
 
-    ops.complete_task(new_task.id)
-    print("Done.")
+        new_task = ops.add_task(
+            title="Review deployment",
+            project_id=projects[0].id if projects else "INBOX",
+            notes="Check docker logs after release",
+        )
+        print("Created:", new_task.id)
+
+        completed = ops.complete_task(new_task.id)
+        print("Completed:", completed.id)
+
+
+if __name__ == "__main__":
+    main()
