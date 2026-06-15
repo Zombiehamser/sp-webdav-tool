@@ -17,6 +17,7 @@ def make_settings() -> Settings:
         path="/webdav/MAIN.json",
         username="user",
         password="pass",  # type: ignore[arg-type]
+        timeout=10.0,
         retry_count=2,
     )
 

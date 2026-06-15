@@ -1,4 +1,6 @@
+from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
@@ -16,11 +18,13 @@ def make_mock_operations() -> tuple[SpOperations, MagicMock]:
         path="/webdav/MAIN.json",
         username="user",
         password="pass",  # type: ignore[arg-type]
+        timeout=10.0,
+        retry_count=2,
     )
 
     ops = SpOperations.__new__(SpOperations)
     ops.settings = settings
-    mock_client = MagicMock()
+    mock_client: Any = MagicMock()
     ops.client = mock_client
     mock_client.fetch.return_value = (
         SpData.model_validate_json(FIXTURE_TEXT),
@@ -31,7 +35,7 @@ def make_mock_operations() -> tuple[SpOperations, MagicMock]:
     )
     return ops, mock_client
 
-def _run_mutator(mutator):
+def _run_mutator(mutator: Callable[[SpData], None]) -> SpData:
     data = SpData.model_validate_json(FIXTURE_TEXT)
     mutator(data)
     return data
@@ -62,7 +66,10 @@ def test_complete_task() -> None:
 def test_complete_task_not_found() -> None:
     ops, mock_client = make_mock_operations()
 
-    def fail_mutate(mutator, make_backup=False):
+    def fail_mutate(
+        mutator: Callable[[SpData], None],
+        make_backup: bool = False,
+    ) -> SpData:
         data = SpData.model_validate_json(FIXTURE_TEXT)
         del data.task.entities["task-001"]
         mutator(data)

@@ -3,9 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 
 from sp_webdav_tool.client import SpWebDavClient
-from sp_webdav_tool.models import Project, Tag, Task
+from sp_webdav_tool.models import Project, SpData, Tag, Task
 from sp_webdav_tool.settings import Settings
-
 
 class SpOperations:
     def __init__(self, settings: Settings | None = None) -> None:
@@ -57,7 +56,7 @@ class SpOperations:
             tagIds=tag_ids or [],
         )
 
-        def mutator(data) -> None:
+        def mutator(data: SpData) -> None:
             data.task.entities[task.id] = task
             if task.id not in data.task.ids:
                 data.task.ids.append(task.id)
@@ -75,7 +74,7 @@ class SpOperations:
     ) -> Task:
         updated_task: Task | None = None
 
-        def mutator(data) -> None:
+        def mutator(data: SpData) -> None:
             nonlocal updated_task
             task = data.task.entities.get(task_id)
             if task is None:
@@ -98,7 +97,7 @@ class SpOperations:
     def complete_task(self, task_id: str) -> Task:
         completed_task: Task | None = None
 
-        def mutator(data) -> None:
+        def mutator(data: SpData) -> None:
             nonlocal completed_task
             task = data.task.entities.get(task_id)
             if task is None:
@@ -112,7 +111,7 @@ class SpOperations:
         return completed_task
 
     def delete_task(self, task_id: str) -> None:
-        def mutator(data) -> None:
+        def mutator(data: SpData) -> None:
             if task_id not in data.task.entities:
                 raise KeyError(f"Task not found: {task_id}")
             del data.task.entities[task_id]
@@ -123,7 +122,7 @@ class SpOperations:
     def add_project(self, title: str) -> Project:
         project = Project(title=title)
 
-        def mutator(data) -> None:
+        def mutator(data: SpData) -> None:
             data.project.entities[project.id] = project
             if project.id not in data.project.ids:
                 data.project.ids.append(project.id)
