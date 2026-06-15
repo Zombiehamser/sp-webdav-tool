@@ -14,7 +14,7 @@ This project provides a small Python library and CLI for reading and updating Su
 
 ## Why this exists
 
-Super Productivity is a local-first application: your data stays under your control, and sync can be handled through your own WebDAV storage. This project makes that same task data accessible to scripts, cron jobs, and server-side agents such as Hermes. [web:161][web:168]
+Super Productivity is a local-first application: your data stays under your control, and sync can be handled through your own WebDAV storage. This project makes that same task data accessible to scripts, cron jobs, and server-side agents such as Hermes. 
 
 ## Why not MCP?
 
@@ -43,7 +43,7 @@ In practice, the tool:
 
 Super Productivity currently uses file-based synchronization. This tool updates the same sync data used by desktop and mobile clients, so concurrent writes from multiple devices can still create conflicts.
 
-To reduce that risk, the library checks the file version before writing and creates automatic backups. It improves safety, but it does not replace a full conflict-free sync engine. [web:166]
+To reduce that risk, the library checks the file version before writing and creates automatic backups. It improves safety, but it does not replace a full conflict-free sync engine. 
 
 ## Requirements
 
