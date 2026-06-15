@@ -2,31 +2,48 @@
 
 Русская версия: [README.ru.md](README.ru.md)
 
+Use [Super Productivity](https://super-productivity.com) as a scriptable task system for CLI tools, automations, and AI agents.
 
-
-WebDAV client for [Super Productivity](https://super-productivity.com) — manage tasks, projects and tags from CLI, scripts and AI agents without running a browser.
+This project provides a small Python library and CLI for reading and updating Super Productivity data through an existing WebDAV sync target — without a browser session, without plugins, and without a third-party cloud.
 
 [![Tests](https://github.com/Zombiehamser/sp-webdav-tool/actions/workflows/test.yml/badge.svg)](https://github.com/Zombiehamser/sp-webdav-tool/actions)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
+
+
+## Why this exists
+
+Super Productivity is a local-first application: your data stays under your control, and sync can be handled through your own WebDAV storage. This project makes that same task data accessible to scripts, cron jobs, and server-side agents such as Hermes. [web:161][web:168]
+
+## Why not MCP?
+
+This project solves a different problem.
+
+MCP-based integrations are useful when an AI assistant communicates with a running application through a dedicated bridge. This tool is designed for server-side automation and headless environments: it works directly with an existing WebDAV sync target, without a browser session, desktop UI, or plugin bridge.
+
+Choose this project if you want:
+- CLI scripts and cron automation
+- server-side agents such as Hermes
+- a self-hosted workflow without browser dependencies
+- direct access to the same sync storage already used by your devices
+
 ## How it works
 
-Super Productivity stores all data in a single `MAIN.json` file and syncs it through WebDAV. This library reads and writes that file directly using ETag-based optimistic locking.
+Super Productivity syncs task data through a file-based storage model. This tool reads and updates the same WebDAV sync data that your desktop and mobile clients already use.
 
-```text
-Your script / Hermes agent
-        │
-        │  HTTPS + Basic Auth
-        │  GET  MAIN.json  (+ ETag)
-        │  PUT  MAIN.json  (If-Match: ETag)
-        │
- your-sp-server:port/webdav/MAIN.json
-        │
-        │  WebDAV sync
-        │
- Desktop / mobile SP clients
-```
+In practice, the tool:
+- downloads the current sync file,
+- applies only the requested change,
+- checks that the file was not changed by another client in the meantime,
+- retries instead of silently overwriting newer data,
+- creates backups before write operations.
+
+## Important note
+
+Super Productivity currently uses file-based synchronization. This tool updates the same sync data used by desktop and mobile clients, so concurrent writes from multiple devices can still create conflicts.
+
+To reduce that risk, the library checks the file version before writing and creates automatic backups. It improves safety, but it does not replace a full conflict-free sync engine. [web:166]
 
 ## Requirements
 
