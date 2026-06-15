@@ -6,6 +6,7 @@ from sp_webdav_tool.client import SpWebDavClient
 from sp_webdav_tool.models import Project, SpData, Tag, Task
 from sp_webdav_tool.settings import Settings
 
+
 class SpOperations:
     def __init__(self, settings: Settings | None = None) -> None:
         self.settings = settings or Settings()  # type: ignore[call-arg]
