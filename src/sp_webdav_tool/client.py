@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import time
 from collections.abc import Callable
 from pathlib import Path
-import time
 
 import httpx
 
@@ -12,7 +12,6 @@ from sp_webdav_tool.settings import Settings
 
 class ETagConflictError(Exception):
     pass
-
 
 class SpWebDavClient:
     def __init__(self, settings: Settings) -> None:

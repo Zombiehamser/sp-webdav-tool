@@ -3,6 +3,7 @@ from pathlib import Path
 import httpx
 import pytest
 import respx
+
 from sp_webdav_tool.client import ETagConflictError, SpWebDavClient
 from sp_webdav_tool.models import SpData
 from sp_webdav_tool.settings import Settings
@@ -29,8 +30,10 @@ def test_fetch_parses_response() -> None:
             headers={"ETag": '"abc123"'},
         )
     )
+
     with SpWebDavClient(settings) as client:
         data, etag = client.fetch()
+
     assert route.called
     assert isinstance(data, SpData)
     assert etag == '"abc123"'
@@ -43,8 +46,10 @@ def test_push_sends_if_match() -> None:
         return_value=httpx.Response(204),
     )
     data = SpData.model_validate_json(FIXTURE_DATA)
+
     with SpWebDavClient(settings) as client:
         client.push(data, '"abc123"')
+
     assert route.called
     request = route.calls[0].request
     assert request.headers["If-Match"] == '"abc123"'
@@ -56,6 +61,7 @@ def test_push_raises_on_412() -> None:
         return_value=httpx.Response(412),
     )
     data = SpData.model_validate_json(FIXTURE_DATA)
+
     with SpWebDavClient(settings) as client, pytest.raises(ETagConflictError):
         client.push(data, '"stale"')
 
@@ -69,8 +75,10 @@ def test_backup_writes_file(tmp_path: Path) -> None:
             headers={"ETag": '"x"'},
         )
     )
+
     with SpWebDavClient(settings) as client:
         data, _ = client.fetch()
         path = client.backup(data)
+
     assert path.exists()
     assert path.name.startswith("MAIN_")

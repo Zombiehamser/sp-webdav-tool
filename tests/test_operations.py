@@ -7,10 +7,8 @@ from sp_webdav_tool.models import SpData
 from sp_webdav_tool.operations import SpOperations
 from sp_webdav_tool.settings import Settings
 
-
 FIXTURE = Path(__file__).parent / "fixtures" / "main_minimal.json"
 FIXTURE_TEXT = FIXTURE.read_text(encoding="utf-8")
-
 
 def make_mock_operations() -> tuple[SpOperations, MagicMock]:
     settings = Settings(
@@ -29,29 +27,24 @@ def make_mock_operations() -> tuple[SpOperations, MagicMock]:
         '"etag"',
     )
     mock_client.mutate.side_effect = lambda mutator, make_backup=False: _run_mutator(
-        mock_client,
-        mutator,
+        mutator
     )
     return ops, mock_client
 
-
-def _run_mutator(mock_client: MagicMock, mutator):
+def _run_mutator(mutator):
     data = SpData.model_validate_json(FIXTURE_TEXT)
     mutator(data)
     return data
-
 
 def test_list_tasks_excludes_done() -> None:
     ops, _ = make_mock_operations()
     tasks = ops.list_tasks(include_done=False)
     assert all(not task.isDone for task in tasks)
 
-
 def test_list_tasks_includes_done() -> None:
     ops, _ = make_mock_operations()
     tasks = ops.list_tasks(include_done=True)
     assert any(task.isDone for task in tasks)
-
 
 def test_add_task_calls_mutate() -> None:
     ops, mock_client = make_mock_operations()
@@ -60,13 +53,11 @@ def test_add_task_calls_mutate() -> None:
     assert task.projectId == "proj-001"
     mock_client.mutate.assert_called_once()
 
-
 def test_complete_task() -> None:
     ops, mock_client = make_mock_operations()
     task = ops.complete_task("task-001")
     assert task.isDone is True
     mock_client.mutate.assert_called_once()
-
 
 def test_complete_task_not_found() -> None:
     ops, mock_client = make_mock_operations()
@@ -82,19 +73,16 @@ def test_complete_task_not_found() -> None:
     with pytest.raises(KeyError):
         ops.complete_task("task-001")
 
-
 def test_update_task_title() -> None:
     ops, mock_client = make_mock_operations()
     task = ops.update_task("task-001", title="Updated title")
     assert task.title == "Updated title"
     mock_client.mutate.assert_called_once()
 
-
 def test_delete_task_calls_mutate() -> None:
     ops, mock_client = make_mock_operations()
     ops.delete_task("task-001")
     mock_client.mutate.assert_called_once()
-
 
 def test_list_projects() -> None:
     ops, _ = make_mock_operations()
